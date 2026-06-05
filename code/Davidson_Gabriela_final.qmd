@@ -28,6 +28,75 @@ nest_data <- read_csv(here("data", "nest_data_final.csv"))
 ```
 
 
-# Problem 1: Research Writing
+## Problem 1. Research writing
 
-## a. Transparent statistical methods
+### a. Transparent statistical methods
+
+In part 1, they used a logistic regression, since the response variable (probability of American Avocet micro habitat use) is binary and distance to water edge is a continuous predictor. In part 2, they used a chi-square test of independence, since they are testing the relationship between two categorical variables (bird species and habitat type).
+
+### b. Suggestions for rewriting
+
+Part 1: Distance to water edge was a significant predictor of American Avocet microhabitat use, meaning that where a bird was found was related to how far it was from the water's edge.
+
+Part 2: The three bird species — American Avocet, Forster's Tern, and Black-necked Stilt — were not evenly distributed across habitat types (managed pond, non-tidal marsh, salt pond, tidal marsh, and tidal mudflat), suggesting that each species shows preferences for particular habitats.
+
+### c. Further analysis
+
+Presence of wet bare ground (categorical: present or absent, assessed visually during point count surveys) could influence the probability of American Avocet microhabitat use because, according to Schacter et al. (2023), Avocets fed primarily on wet bare ground in 65% of foraging observations, suggesting they strongly select for this substrate type when choosing where to forage. Sites lacking wet bare ground would therefore be expected to have lower probability of Avocet microhabitat use.
+
+## Problem 2. Data analysis
+
+
+```{r}
+#| label: clean_data
+
+nests_clean <- nest_data |> 
+  # select only the 3 columns of interest
+  select(case_control, height_cm, ant_species) |> 
+  # filter to only the 3 ant species of interest
+  filter(ant_species %in% c("AB", "RRB", "BBR")) |> 
+  # create column with full scientific names
+  mutate(ant_species_full = case_when(
+    ant_species == "AB"  ~ "Crematogaster sjostedti",
+    ant_species == "RRB" ~ "Crematogaster mimosae",
+    ant_species == "BBR" ~ "Crematogaster nigriceps"
+  )) |> 
+  # reorder factor levels: C. sjostedti, C. mimosae, C. nigriceps
+  mutate(ant_species_full = fct_relevel(ant_species_full,
+                                        "Crematogaster sjostedti",
+                                        "Crematogaster mimosae",
+                                        "Crematogaster nigriceps"))
+
+# display structure of nests_clean
+str(nests_clean)
+
+# display 10 random rows
+slice_sample(nests_clean, n = 10)
+```
+
+
+### b. Response variable
+
+In this dataset, a 1 indicates that the tree was a "used" tree, meaning a bird nest of 
+any species was found in that tree. A 0 indicates that the tree was an "available" tree, 
+meaning it was one of the four nearest neighbors to a nest tree but did not itself 
+contain a nest.
+
+### c. Purpose of study
+
+**Tree height** is a continuous variable measured in centimeters. As tree height 
+increases, the probability of nest occurrence would increase because taller trees 
+may offer greater structural complexity and concealment from predators, making them 
+more suitable nest sites; the authors found that for each 1 m increase in height, 
+the odds that birds nested in a tree increased by 20%. This information was found in 
+the Methods section (paragraph 2) and the Results section (paragraph 1).
+
+**Acacia ant species** is a categorical variable with three levels: *Crematogaster 
+sjostedti*, *Crematogaster mimosae*, and *Crematogaster nigriceps*. As ant species 
+identity shifts from less aggressive defenders (*C. sjostedti*) to more aggressive 
+defenders (*C. mimosae* and *C. nigriceps*), the probability of nest occurrence would 
+increase because more aggressive ant species vigorously defend host trees against 
+mammalian herbivores and predators, which may also protect bird nests from disturbance 
+and predation. This information was found in the Introduction (paragraphs 2–3) and 
+the Discussion (paragraphs 1–2).s
+

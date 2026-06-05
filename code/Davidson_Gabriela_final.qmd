@@ -1,0 +1,33 @@
+---
+title: "ENVS-193DS Final"
+author: "Gabriela Davidson"
+date: 2026-06-09
+format: pdf
+---
+
+# Link to Git Hub
+[GitHub Repository](https://github.com/gdavidson533/ENVS-193DS_spring-2026_final.git)
+
+# Set Up 
+
+```{r}
+#| label: Set_up
+#| message: false
+#| warning: false
+library(tidyverse)   # data wrangling and ggplot
+library(here)        # file paths
+library(janitor)     # data cleaning
+library(DHARMa)      # diagnostic checks for models
+library(MuMIn)       # AIC model selection
+library(ggeffects)   # model predictions
+library(flextable)   # making tables
+```
+
+```{r}
+nest_data <- read_csv(here("data", "nest_data_final.csv"))
+```
+
+
+# Problem 1: Research Writing
+
+## a. Transparent statistical methods

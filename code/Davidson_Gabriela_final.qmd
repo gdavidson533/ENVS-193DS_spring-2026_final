@@ -4,7 +4,10 @@ author: "Gabriela Davidson"
 date: 2026-06-09
 format: 
   pdf:
+    toc: true
     code-overflow: wrap
+    fig-width: 6
+    fig-height: 4
 ---
 
 # Link to Git Hub
@@ -23,14 +26,16 @@ library(DHARMa)      # diagnostic checks for models
 library(MuMIn)       # AIC model selection
 library(ggeffects)   # model predictions
 library(flextable)   # making tables
+library(rstatix)     # effect size calculations
 ```
 
 ```{r}
 nest_data <- read_csv(here("data", "nest_data_final.csv"))
+my_data <- read_csv(here("data", "my_data.csv"))
 ```
 
 
-## Problem 1. Research writing
+# Problem 1. Research writing
 
 ### 1a. Transparent statistical methods
 
@@ -46,9 +51,9 @@ Part 2: The three bird species — American Avocet, Forster's Tern, and Black-ne
 
 Presence of wet bare ground (categorical: present or absent, assessed visually during point count surveys) could influence the probability of American Avocet microhabitat use because, according to Schacter et al. (2023), Avocets fed primarily on wet bare ground in 65% of foraging observations, suggesting they strongly select for this substrate type when choosing where to forage. Sites lacking wet bare ground would therefore be expected to have lower probability of Avocet microhabitat use.
 
-## Problem 2. Data analysis
+# Problem 2. Data analysis
 
-## 2a. Clean and Wrangle
+### 2a. Clean and Wrangle
 ```{r}
 #| label: clean_data
 
@@ -102,7 +107,7 @@ mammalian herbivores and predators, which may also protect bird nests from distu
 and predation. This information was found in the Introduction (paragraphs 2–3) and 
 the Discussion (paragraphs 1–2).
 
-## 2d. Table of Models 
+### 2d. Table of Models 
 ```{r}
 model_table <- data.frame(
   "Model Number" = c("Model 1", "Model 2"),
@@ -126,7 +131,7 @@ flextable(model_table) |>
   fontsize(size = 9, part = "all")
 ```
 
-## 2e. Run models
+### 2e. Run models
 
 ```{r}
 #| output: false
@@ -143,7 +148,7 @@ model2 <- glm(case_control ~ height_cm * ant_species_full,
 ```
 
 
-## 2f. Select the best model
+### 2f. Select the best model
 The best model as determined by Akaike's Information Criterion (AIC) was the model 
 with an interaction term between tree height and acacia ant species, predicting the 
 probability of bird nest occurrence (AICc = 238.12). This model performed better than 
@@ -151,16 +156,18 @@ the additive model with no interaction term (AICc = 258.89), indicating that the
 of tree height on the probability of nest occurrence differs depending on which acacia 
 ant species occupies the tree.
 
-## 2g. Check diagnostics
+### 2g. Check diagnostics
 
 ```{r}
+#| fig-width: 8
+#| fig-height: 4
 
 # simulate residuals from best model (model 2, with interaction)
 simulation_output <- simulateResiduals(fittedModel = model2,
                                        plot = TRUE)
 ```
 
-## 2h. Visualize the model predictions 
+### 2h. Visualize the model predictions 
 
 ```{r}
 # generate predictions from model 2 for height across all 3 ant species
@@ -214,7 +221,7 @@ predict_600
 ```
 
 
-## 2i. Write Caption for figure
+### 2i. Write Caption for figure
 
 **Figure 1. Predicted probability of bird nest occurrence as a function of tree height 
 for three acacia ant species in a Kenyan savanna.** Lines show model predicted 
@@ -228,12 +235,12 @@ Goheen, J. R., & Alston, J. M. (2023). Data, code, and metadata for: Symbiotic a
 ants drive nesting behavior by birds in an African savanna [Data set]. Zenodo. 
 https://doi.org/10.5281/zenodo.8373322
 
-## 2k. Interpret your results
+### 2k. Interpret your results
 
 As shown in Figure 1, the probability of bird nest occurrence increased with tree height 
 for trees occupied by *Crematogaster mimosae* and *Crematogaster nigriceps*, while trees 
 occupied by *Crematogaster sjostedti* showed little increase in nest probability with 
-height. At 600 cm — the tallest tree in the dataset — the predicted probability of nest 
+height. At 600 cm, the tallest tree in the dataset, the predicted probability of nest 
 occurrence was 0.20 for *C. sjostedti*, 0.74 for *C. mimosae*, and 1.00 for 
 *C. nigriceps* trees (Figure 1). The substantially higher probability of nest occurrence 
 in trees occupied by *C. mimosae* and *C. nigriceps* is likely explained by the fact 
@@ -245,4 +252,123 @@ snakes and raptors (Lujan et al. 2023). In contrast, *C. sjostedti* provides onl
 minimal protection against herbivory, making those trees far less attractive nest sites 
 regardless of tree height (Lujan et al. 2023).
 
+# Problem 3. Affective and exploratory visualizations
+
+### 3a. Comparing visualizations
+
+**How are the visualizations different?**
+The exploratory visualizations from Homework 2 used standard statistical plot types — a 
+jitter plot with means and error bars comparing focus level between work and non-work days 
+and a scatterplot of water intake versus focus level — while the affective visualization 
+from Homework 3 represented each day as a hand-drawn drinking glass where fill level 
+encoded water intake and water color (green to blue) encoded focus level, inspired by the 
+Dear Data project. The exploratory plots prioritize precise visual comparison of values 
+across groups, while the affective visualization prioritizes an embodied, personal feeling 
+of each day's energy and hydration.
+
+**What similarities do you see?**
+All visualizations represent the same two core variables — daily water intake and focus 
+level — and all show individual observations rather than aggregated summaries alone. Both 
+the exploratory and affective visualizations also incorporate work day as an additional 
+variable, encoded through color grouping in the exploratory plots and through sun or moon 
+symbols in the affective visualization.
+
+**What patterns do you see?**
+In the Homework 2 exploratory plots, focus level appeared slightly lower on work days 
+compared to non-work days, and higher water intake appeared associated with higher focus 
+level. The affective visualization from Homework 3 showed the same general pattern — 
+glasses with more water fill tended to have cooler, bluer colors indicating higher focus. 
+The patterns are consistent across visualizations because all draw from the same 
+underlying dataset, though the affective visualization makes the day-to-day variation 
+feel more personal and tangible than the summary statistics in the exploratory plots.
+
+**What feedback did you get in week 9?**
+In week 9 workshop, feedback suggested making the legend clearer so viewers could decode 
+what the fill level and water color represented without prior context. I tried to implement 
+this by including a hand-drawn legend in the corner of the postcard indicating what fill 
+levels and colors corresponded to specific water intake and focus values, though the legend 
+remains somewhat informal given the hand-drawn medium of the piece.
+
+### 3b. Designing an analysis
+
+I propose a Welch's two-sample t-test comparing mean focus level between work days and 
+non-work days. This analysis is appropriate because my research question asks whether 
+focus level differs depending on whether the day is a work day; my response variable 
+(focus level, 1–5 scale) is continuous, and my predictor variable (work day: yes/no) is 
+categorical with two levels. A t-test is the appropriate method for comparing means 
+between two independent groups when the response variable is continuous and approximately 
+normally distributed, which I will verify with QQ plots before running the test.
+
+
+### 3c. Checking assumptions
+
+```{r qq-check}
+# check normality of focus level for each work day group using QQ plots
+ggplot(data = my_data,
+       aes(sample = focus_level)) +
+  geom_qq() +
+  geom_qq_line(color = "blue") +
+  facet_wrap(~work_day) +
+  labs(title = "QQ plots: Focus level by work day") +
+  theme_bw()
+```
+
+### Running the analysis
+
+```{r run-ttest}
+# run Welch's two-sample t-test comparing focus level between work and non-work days
+t_test_result <- t.test(focus_level ~ work_day,
+                        data = my_data,
+                        var.equal = FALSE)
+
+# display result
+t_test_result
+```
+
+### Effect size
+
+```{r effect-size}
+# calculate Cohen's d effect size to quantify magnitude of difference
+cohens_d(focus_level ~ work_day,
+         data = my_data)
+```
+
+
+### 3d. Visualization 
+
+```{r}
+#| label: focus_plot
+# summarize mean and SD by work day for plotting
+my_data_summary <- my_data |>
+  group_by(work_day) |>
+  summarize(mean_focus = mean(focus_level),
+            sd_focus = sd(focus_level))
+
+# plot focus level by work day with raw data, means, and SD error bars
+ggplot() +
+  geom_jitter(data = my_data,
+              aes(x = work_day,
+                  y = focus_level,
+                  color = work_day),
+              width = 0.1, height = 0,
+              size = 3, alpha = 0.6) +
+  geom_point(data = my_data_summary,
+             aes(x = work_day,
+                 y = mean_focus,
+                 color = work_day),
+             size = 5) +
+  geom_errorbar(data = my_data_summary,
+                aes(x = work_day,
+                    ymin = mean_focus - sd_focus,
+                    ymax = mean_focus + sd_focus,
+                    color = work_day),
+                width = 0.1) +
+  scale_color_manual(values = c("no" = "#56B4E9",
+                                "yes" = "#E69F00")) +
+  labs(x = "Work Day (yes/no)",
+       y = "Focus Level (1-5)") +
+  theme_classic() +
+  theme(legend.position = "none")
+```
+```
 

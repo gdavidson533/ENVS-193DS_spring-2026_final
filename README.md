@@ -49,4 +49,4 @@ Main Quarto document containing all three problems of the final: statistical com
 
 ## Rendered output
 
-[Link to rendered PDF](insert-url-here)
+[Link to rendered PDF](https://drive.google.com/file/d/1aTOZHxkv6INotMoQItkKYVomLXwk3RiU/view?usp=sharing)

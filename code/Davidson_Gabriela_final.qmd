@@ -160,13 +160,7 @@ model2 <- glm(case_control ~ height_cm * ant_species_full,
 
 
 ### 2f. Select the best model
-The best model as determined by Akaike's Information Criterion (AIC) was the model 
-with an interaction term between tree height and acacia ant species, predicting the 
-probability of bird nest occurrence (AICc = 238.12). This model performed better than 
-the additive model with no interaction term (AICc = 258.89), indicating that the effect 
-of tree height on the probability of nest occurrence differs depending on which acacia 
-ant species occupies the tree.
-
+The best model as determined by Akaike's Information Criterion (AIC) was the model with an interaction term between tree height and acacia ant species, predicting the probability of bird nest occurrence (AICc = 238.12). This model performed better than the additive model with no interaction term (AICc = 258.89, ΔAICc = 20.77), indicating that the effect of tree height on the probability of nest occurrence differs depending on which acacia ant species occupies the tree. A ΔAICc greater than 2 indicates meaningful improvement in model fit, suggesting the interaction term is an important component of the model.
 ### 2g. Check diagnostics
 
 ```{r}

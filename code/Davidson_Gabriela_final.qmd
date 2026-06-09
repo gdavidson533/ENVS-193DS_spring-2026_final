@@ -404,6 +404,7 @@ ggplot() +
 ```
 
 
+
 ### 3e. Write a caption
 
 **Figure 2. Daily focus level (1-5 scale) on work days versus non-work days across 30 

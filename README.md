@@ -1,4 +1,4 @@
-# ENVS-193DS_spring-2026_final
+
 # ENVS-193DS Spring 2026 Final
 
 ## General information
@@ -23,7 +23,9 @@ ENVS-193DS_spring-2026_final/
 │   └── final.qmd
 └── data/
     ├── nest_data_final.csv
-    └── metadata.zip
+    ├── metadata.zip    
+    └── my_data.csv
+        
 ```
 
 ### Data
@@ -33,6 +35,10 @@ Nest box occupancy data from: Lujan, E., Nielsen, R., Short, Z., Wicks, S., Nder
 
 **`data/metadata.zip`**  
 Metadata file describing all variables and their units for the nest box occupancy dataset.
+
+**`data/my_data.csv`**  
+Personal tracking data collected over 30 days including daily focus level (1-5 scale), 
+water intake, and work day status (yes/no), used for Problem 3 analysis.
 
 ### Code
 

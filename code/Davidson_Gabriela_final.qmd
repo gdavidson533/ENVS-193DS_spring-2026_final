@@ -8,6 +8,9 @@ format:
     code-overflow: wrap
     fig-width: 6
     fig-height: 4
+execute:
+  message: false
+  warning: false
 ---
 
 # Link to Git Hub
@@ -39,13 +42,21 @@ my_data <- read_csv(here("data", "my_data.csv"))
 
 ### 1a. Transparent statistical methods
 
-In part 1, they used a logistic regression, since the response variable (probability of American Avocet micro habitat use) is binary and distance to water edge is a continuous predictor. In part 2, they used a chi-square test of independence, since they are testing the relationship between two categorical variables (bird species and habitat type).
+#### Part 1:
+In part 1, they used a logistic regression, since the response variable (probability of American Avocet micro habitat use) is binary and distance to water edge is a continuous predictor. 
+#### Part 2:
+In part 2, they used a chi-square test of independence, since they are testing the relationship between two categorical variables (bird species and habitat type).
 
 ### 1b. Suggestions for rewriting
 
-Part 1: Distance to water edge was a significant predictor of American Avocet microhabitat use, meaning that where a bird was found was related to how far it was from the water's edge.
+Part 1: Distance to water edge was a significant predictor of American Avocet 
+microhabitat use, meaning that where a bird was found was related to how far it 
+was from the water's edge.
 
-Part 2: The three bird species — American Avocet, Forster's Tern, and Black-necked Stilt — were not evenly distributed across habitat types (managed pond, non-tidal marsh, salt pond, tidal marsh, and tidal mudflat), suggesting that each species shows preferences for particular habitats.
+Part 2: The three bird species, American Avocet, Forster's Tern, and Black-necked 
+Stilt, were not evenly distributed across habitat types (managed pond, non-tidal 
+marsh, salt pond, tidal marsh, and tidal mudflat), suggesting that each species 
+shows preferences for particular habitats.
 
 ### 1c. Further analysis
 
@@ -167,9 +178,17 @@ simulation_output <- simulateResiduals(fittedModel = model2,
                                        plot = TRUE)
 ```
 
+The QQ plot shows simulated residuals closely following the expected distribution, 
+and the residual vs. predicted plot shows no significant problems detected 
+(KS test: p = 0.48, dispersion test: p = 0.77, outlier test: p = 1). 
+The model assumptions are met and the model is appropriate for inference.
+
+
 ### 2h. Visualize the model predictions 
 
 ```{r}
+#| message: false
+#| warning: false
 # generate predictions from model 2 for height across all 3 ant species
 predictions <- ggpredict(model2,
                          terms = c("height_cm", "ant_species_full"))
@@ -235,6 +254,18 @@ Goheen, J. R., & Alston, J. M. (2023). Data, code, and metadata for: Symbiotic a
 ants drive nesting behavior by birds in an African savanna [Data set]. Zenodo. 
 https://doi.org/10.5281/zenodo.8373322
 
+### 2j. Calculate model predictions
+
+```{r predict-600cm}
+# calculate predicted probability of nest occurrence at 600 cm for each ant species
+predict_600 <- ggpredict(model2,
+                         terms = c("height_cm [600]",
+                                   "ant_species_full"))
+
+# display output
+predict_600
+```
+
 ### 2k. Interpret your results
 
 As shown in Figure 1, the probability of bird nest occurrence increased with tree height 
@@ -257,9 +288,9 @@ regardless of tree height (Lujan et al. 2023).
 ### 3a. Comparing visualizations
 
 **How are the visualizations different?**
-The exploratory visualizations from Homework 2 used standard statistical plot types — a 
+The exploratory visualizations from Homework 2 used standard statistical plot types, a 
 jitter plot with means and error bars comparing focus level between work and non-work days 
-and a scatterplot of water intake versus focus level — while the affective visualization 
+and a scatterplot of water intake versus focus level, while the affective visualization 
 from Homework 3 represented each day as a hand-drawn drinking glass where fill level 
 encoded water intake and water color (green to blue) encoded focus level, inspired by the 
 Dear Data project. The exploratory plots prioritize precise visual comparison of values 
@@ -276,16 +307,16 @@ symbols in the affective visualization.
 **What patterns do you see?**
 In the Homework 2 exploratory plots, focus level appeared slightly lower on work days 
 compared to non-work days, and higher water intake appeared associated with higher focus 
-level. The affective visualization from Homework 3 showed the same general pattern — 
+level. The effective visualization from Homework 3 showed the same general pattern — 
 glasses with more water fill tended to have cooler, bluer colors indicating higher focus. 
 The patterns are consistent across visualizations because all draw from the same 
-underlying dataset, though the affective visualization makes the day-to-day variation 
+underlying data set, though the effective visualization makes the day-to-day variation 
 feel more personal and tangible than the summary statistics in the exploratory plots.
 
 **What feedback did you get in week 9?**
 In week 9 workshop, feedback suggested making the legend clearer so viewers could decode 
 what the fill level and water color represented without prior context. I tried to implement 
-this by including a hand-drawn legend in the corner of the postcard indicating what fill 
+this by including a hand-drawn legend on the back of the postcard indicating what fill 
 levels and colors corresponded to specific water intake and focus values, though the legend 
 remains somewhat informal given the hand-drawn medium of the piece.
 
@@ -337,7 +368,6 @@ cohens_d(focus_level ~ work_day,
 ### 3d. Visualization 
 
 ```{r}
-#| label: focus_plot
 # summarize mean and SD by work day for plotting
 my_data_summary <- my_data |>
   group_by(work_day) |>
@@ -365,10 +395,30 @@ ggplot() +
                 width = 0.1) +
   scale_color_manual(values = c("no" = "#56B4E9",
                                 "yes" = "#E69F00")) +
+  scale_y_continuous(limits = c(1, 5),
+                     breaks = c(1, 2, 3, 4, 5)) +
   labs(x = "Work Day (yes/no)",
        y = "Focus Level (1-5)") +
   theme_classic() +
   theme(legend.position = "none")
 ```
-```
+
+
+### 3e. Write a caption
+
+**Figure 2. Daily focus level (1-5 scale) on work days versus non-work days across 30 
+days of personal observation.** Small points show individual daily focus level 
+observations, jittered horizontally to reduce overlap. Large points show the group mean 
+and error bars represent plus or minus 1 standard deviation. Blue points represent 
+non-work days and orange points represent work days.
+
+### 3f. Write about your results
+
+Non-work days had a higher mean focus level (mean = 3.71, n = 17) compared to work days 
+(mean = 2.54, n = 13), a difference of about 1.17 points on the 1-5 scale. This 
+difference was statistically significant and large in magnitude (Welch's t-test: 
+t(27.61) = 3.88, p < 0.001, Cohen's d = 1.39), suggesting that whether or not a day 
+is a work day has a strong association with how focused I feel. This pattern may reflect 
+the increased demands and reduced autonomy over daily schedule that come with work days, 
+which could make it harder to sustain attention and mental clarity throughout the day.
 

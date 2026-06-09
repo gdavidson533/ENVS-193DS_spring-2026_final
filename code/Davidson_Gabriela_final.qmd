@@ -120,35 +120,51 @@ the Discussion (paragraphs 1–2).
 ### 2d. Table of Models 
 
 ```{r}
-# create table of models
+# create data frame with model information for table
 model_table <- data.frame(
+  # model numbers as character strings
   "Model Number" = c("1", "2"),
+  # response variable is the same for both models
   "Response Variable" = c("Probability of nest occurrence",
                           "Probability of nest occurrence"),
+  # both models use the same predictors
   "Predictor Variables" = c("Tree height (cm), ant species",
                             "Tree height (cm), ant species"),
+  # model 1 has interaction term, model 2 does not
   "Interaction Term" = c("Yes (height × ant species)",
                          "No")
 )
 
+# convert data frame to flextable for formatted output
 flextable(model_table) |>
+  # rename column headers to remove periods added by data.frame()
   set_header_labels(
     Model.Number = "Model Number",
     Response.Variable = "Response Variable",
     Predictor.Variables = "Predictor Variables",
     Interaction.Term = "Interaction Term"
   ) |>
+  # center all text in all cells
   align(align = "center", part = "all") |>
+  # left align the first column (model number) only
   align(j = 1, align = "left", part = "all") |>
+  # bold the header row
   bold(part = "header") |>
+  # add gray background to header row
   bg(part = "header", bg = "#D3D3D3") |>
+  # add horizontal borders between rows in the body
   border_inner_h(part = "body") |>
+  # set table to full width and autofit columns, reduce cell padding for pdf
   set_table_properties(width = 1, layout = "autofit",
                        opts_pdf = list(tabcolsep = 3)) |>
+  # set font size to 9 for all parts of the table
   fontsize(size = 9, part = "all") |>
+  # italicize the predictor variables column (column 3) in the body
   italic(j = 3, part = "body") |>
+  # prevent table from splitting across pages in pdf output
   paginate(init = TRUE, hdr_ftr = TRUE)
 ```
+
 
 
 Table 1. Overview of the two candidate models predicting probability of bird nest occurrence. Both models include tree height (cm) and acacia ant species as predictors. Model 1 includes an interaction term allowing the effect of tree height to vary by ant species, while Model 2 assumes the effect of tree height is consistent across all ant species.
@@ -233,18 +249,6 @@ ggplot(predictions, aes(x = x, y = predicted, color = group, fill = group)) +
         strip.text = element_text(face = "italic"),
         strip.background = element_blank())
 ```
-
-
-```{r}
-# calculate predicted probability of nest occurrence at 600 cm for each ant species
-predict_600 <- ggpredict(model2,
-                         terms = c("height_cm [600]",
-                                   "ant_species_full"))
-
-# display output
-predict_600
-```
-
 
 ### 2i. Write Caption for figure
 
@@ -339,35 +343,37 @@ normally distributed, which I will verify with QQ plots before running the test.
 
 ### 3c. Checking assumptions
 
-```{r qq-check}
+```{r}
 # check normality of focus level for each work day group using QQ plots
-ggplot(data = my_data,
-       aes(sample = focus_level)) +
-  geom_qq() +
-  geom_qq_line(color = "blue") +
-  facet_wrap(~work_day) +
-  labs(title = "QQ plots: Focus level by work day") +
-  theme_bw()
+ggplot(data = my_data, # use personal tracking data
+       aes(sample = focus_level)) + # specify focus level as the sample variable
+  geom_qq() + # add QQ plot points
+  geom_qq_line(color = "blue") + # add reference line in blue to assess normality
+  facet_wrap(~work_day) + # create separate panels for work and non-work days
+  labs(title = "QQ plots: Focus level by work day") + # add descriptive title
+  theme_bw() # apply clean black and white theme
 ```
+
 
 ### Running the analysis
 
-```{r run-ttest}
+```{r}
 # run Welch's two-sample t-test comparing focus level between work and non-work days
-t_test_result <- t.test(focus_level ~ work_day,
-                        data = my_data,
-                        var.equal = FALSE)
+t_test_result <- t.test(focus_level ~ work_day, # focus level as response, work day as predictor
+                        data = my_data, # use personal tracking data
+                        var.equal = FALSE) # specify Welch's t-test, does not assume equal variances
 
 # display result
 t_test_result
 ```
 
+
 ### Effect size
 
-```{r effect-size}
+```{r}
 # calculate Cohen's d effect size to quantify magnitude of difference
-cohens_d(focus_level ~ work_day,
-         data = my_data)
+cohens_d(focus_level ~ work_day, # focus level as response, work day as predictor
+         data = my_data) # use personal tracking data
 ```
 
 
@@ -376,39 +382,44 @@ cohens_d(focus_level ~ work_day,
 ```{r}
 # summarize mean and SD by work day for plotting
 my_data_summary <- my_data |>
-  group_by(work_day) |>
-  summarize(mean_focus = mean(focus_level),
-            sd_focus = sd(focus_level))
+  group_by(work_day) |> # group observations by work day status
+  summarize(mean_focus = mean(focus_level), # calculate mean focus level per group
+            sd_focus = sd(focus_level)) # calculate standard deviation per group
 
 # plot focus level by work day with raw data, means, and SD error bars
 ggplot() +
+  # add individual data points jittered horizontally to reduce overlap
   geom_jitter(data = my_data,
               aes(x = work_day,
                   y = focus_level,
                   color = work_day),
-              width = 0.1, height = 0,
-              size = 3, alpha = 0.6) +
+              width = 0.1, height = 0, # jitter only horizontally, not vertically
+              size = 3, alpha = 0.6) + # set point size and transparency
+  # add larger point showing group mean
   geom_point(data = my_data_summary,
              aes(x = work_day,
                  y = mean_focus,
                  color = work_day),
-             size = 5) +
+             size = 5) + # larger size to distinguish mean from raw data points
+  # add error bars showing plus or minus 1 standard deviation
   geom_errorbar(data = my_data_summary,
                 aes(x = work_day,
-                    ymin = mean_focus - sd_focus,
-                    ymax = mean_focus + sd_focus,
+                    ymin = mean_focus - sd_focus, # lower bound of error bar
+                    ymax = mean_focus + sd_focus, # upper bound of error bar
                     color = work_day),
-                width = 0.1) +
+                width = 0.1) + # set width of error bar caps
+  # apply colorblind-friendly colors: blue for non-work, orange for work days
   scale_color_manual(values = c("no" = "#56B4E9",
                                 "yes" = "#E69F00")) +
+  # set y-axis to show full 1-5 scale with breaks at each integer
   scale_y_continuous(limits = c(1, 5),
                      breaks = c(1, 2, 3, 4, 5)) +
+  # add descriptive axis labels
   labs(x = "Work Day (yes/no)",
        y = "Focus Level (1-5)") +
-  theme_classic() +
-  theme(legend.position = "none")
+  theme_classic() + # remove gridlines and grey background
+  theme(legend.position = "none") # remove legend since colors are self-explanatory
 ```
-
 
 
 ### 3e. Write a caption

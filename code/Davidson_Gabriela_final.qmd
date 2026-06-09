@@ -415,8 +415,7 @@ non-work days and orange points represent work days.
 ### 3f. Write about your results
 
 Non-work days had a higher mean focus level (mean = 3.71, n = 17) compared to work days 
-(mean = 2.54, n = 13), a difference of about 1.17 points on the 1-5 scale. This 
-difference was statistically significant and large in magnitude (Welch's t-test: 
+(mean = 2.54, n = 13), a difference of about 1.17 points on the 1-5 scale. This difference was statistically significant and large in magnitude (Welch's t-test: 
 t(27.61) = 3.88, p < 0.001, Cohen's d = 1.39), suggesting that whether or not a day 
 is a work day has a strong association with how focused I feel. This pattern may reflect 
 the increased demands and reduced autonomy over daily schedule that come with work days, 

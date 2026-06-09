@@ -41,7 +41,6 @@ my_data <- read_csv(here("data", "my_data.csv"))
 # Problem 1. Research writing
 
 ### 1a. Transparent statistical methods
-
 #### Part 1:
 In part 1, they used a logistic regression, since the response variable (probability of American Avocet micro habitat use) is binary and distance to water edge is a continuous predictor. 
 #### Part 2:

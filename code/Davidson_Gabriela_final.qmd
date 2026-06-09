@@ -119,28 +119,40 @@ and predation. This information was found in the Introduction (paragraphs 2–3)
 the Discussion (paragraphs 1–2).
 
 ### 2d. Table of Models 
+
 ```{r}
+# create table of models
 model_table <- data.frame(
-  "Model Number" = c("Model 1", "Model 2"),
-  "Response Variable" = c("Probability of nest occurrence", 
-                           "Probability of nest occurrence"),
-  "Predictor Variables" = c("Tree height (cm), ant species", 
-                             "Tree height (cm), ant species"),
-  "Interaction Term" = c("No", "Yes (height × ant species)")
+  "Model Number" = c("1", "2"),
+  "Response Variable" = c("Probability of nest occurrence",
+                          "Probability of nest occurrence"),
+  "Predictor Variables" = c("Tree height (cm), ant species",
+                            "Tree height (cm), ant species"),
+  "Interaction Term" = c("Yes (height × ant species)",
+                         "No")
 )
 
-flextable(model_table) |> 
+flextable(model_table) |>
   set_header_labels(
     Model.Number = "Model Number",
     Response.Variable = "Response Variable",
     Predictor.Variables = "Predictor Variables",
     Interaction.Term = "Interaction Term"
-  ) |> 
-  align(align = "center", part = "all") |> 
-  bold(part = "header") |> 
-  set_table_properties(width = 1, layout = "autofit") |>
-  fontsize(size = 9, part = "all")
+  ) |>
+  align(align = "center", part = "all") |>
+  align(j = 1, align = "left", part = "all") |>
+  bold(part = "header") |>
+  bg(part = "header", bg = "#D3D3D3") |>
+  border_inner_h(part = "body") |>
+  set_table_properties(width = 1, layout = "autofit",
+                       opts_pdf = list(tabcolsep = 3)) |>
+  fontsize(size = 9, part = "all") |>
+  italic(j = 3, part = "body") |>
+  paginate(init = TRUE, hdr_ftr = TRUE)
 ```
+
+
+Table 1. Overview of the two candidate models predicting probability of bird nest occurrence. Both models include tree height (cm) and acacia ant species as predictors. Model 1 includes an interaction term allowing the effect of tree height to vary by ant species, while Model 2 assumes the effect of tree height is consistent across all ant species.
 
 ### 2e. Run models
 
@@ -161,6 +173,7 @@ model2 <- glm(case_control ~ height_cm * ant_species_full,
 
 ### 2f. Select the best model
 The best model as determined by Akaike's Information Criterion (AIC) was the model with an interaction term between tree height and acacia ant species, predicting the probability of bird nest occurrence (AICc = 238.12). This model performed better than the additive model with no interaction term (AICc = 258.89, ΔAICc = 20.77), indicating that the effect of tree height on the probability of nest occurrence differs depending on which acacia ant species occupies the tree. A ΔAICc greater than 2 indicates meaningful improvement in model fit, suggesting the interaction term is an important component of the model.
+
 ### 2g. Check diagnostics
 
 ```{r}
